@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Te amo ❤️</title>
+    <style>
+        /* ========== RESET Y BASE ========== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Segoe UI', 'Helvetica Neue', sans-serif;
+            background: #ffb6c1;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            touch-action: manipulation;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 100vw;
+            height: 100vh;
+            max-width: 500px;
+            max-height: 900px;
+            position: relative;
+            overflow: hidden;
+            background: #ffb6c1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* ========== PÁGINA 1 ========== */
+        #pagina1 {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            transition: opacity 0.5s ease;
+            z-index: 10;
+            background: #ffb6c1;
+        }
+
+        #pagina1.oculta {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .gato {
+            font-size: 15vw;
+            margin-bottom: 2vh;
+            position: relative;
+            z-index: 5;
+            transition: transform 0.2s;
+        }
+
+        .burbuja {
+            position: absolute;
+            top: 18vh;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            color: #333;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 4vw;
+            font-weight: 600;
+            white-space: nowrap;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            pointer-events: none;
+            z-index: 20;
+            border: 2px solid #ff69b4;
+            min-width: 30vw;
+            text-align: center;
+        }
+
+        .burbuja.visible {
+            opacity: 1;
+        }
+
+        .burbuja::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-left: 10px solid transparent;
+            border-right: 10px solid transparent;
+            border-top: 12px solid white;
+        }
+
+        .pregunta {
+            font-size: 6.5vw;
+            font-weight: 700;
+            color: #8b1a4a;
+            text-shadow: 2px 2px 0 #ff69b4;
+            margin-bottom: 3vh;
+            letter-spacing: 1px;
+            text-align: center;
+            z-index: 2;
+        }
+
+        .botones {
+            display: flex;
+            gap: 8vw;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            position: relative;
+            min-height: 12vh;
+            z-index: 2;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 50px;
+            padding: 2.5vh 7vw;
+            font-size: 5.5vw;
+            font-weight: 700;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 6px 0 rgba(0,0,0,0.2), 0 8px 20px rgba(0,0,0,0.15);
+            transition: all 0.1s ease;
+            touch-action: manipulation;
+            position: relative;
+            z-index: 15;
+            min-width: 25vw;
+            text-align: center;
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 0 rgba(0,0,0,0.2);
+        }
+
+        .btn-verde {
+            background: #4CAF50;
+            border-bottom: 4px solid #2e7d32;
+        }
+
+        .btn-rojo {
+            background: #f44336;
+            border-bottom: 4px solid #b71c1c;
+            transition: all 0.2s ease;
+        }
+
+        .btn-rojo.roto {
+            opacity: 0;
+            transform: scale(0) rotate(180deg);
+            pointer-events: none;
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* ========== PÁGINA 2 ========== */
+        #pagina2 {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 16px;
+            overflow-y: auto;
+            background: #ffb6c1;
+            z-index: 20;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.6s ease;
+        }
+
+        #pagina2.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        #pagina2::-webkit-scrollbar {
+            width: 0;
+            background: transparent;
+        }
+        #pagina2 {
+            scrollbar-width: none;
+        }
+
+        .corazones-fondo {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            overflow: hidden;
+            z-index: 0;
+        }
+
+        .corazon-flotante {
+            position: absolute;
+            font-size: 6vw;
+            opacity: 0.15;
+            animation: flotar 8s infinite alternate ease-in-out;
+        }
+
+        @keyframes flotar {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(-30px) rotate(15deg); }
+        }
+
+        .titulo-corazon {
+            position: relative;
+            margin-top: 2vh;
+            margin-bottom: 2vh;
+            font-size: 8vw;
+            color: #d63384;
+            text-align: center;
+            z-index: 2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 2vw;
+        }
+
+        .titulo-corazon .corazon-icon {
+            font-size: 10vw;
+            display: inline-block;
+            animation: latido 1.2s infinite;
+        }
+
+        @keyframes latido {
+            0%, 100% { transform: scale(1); }
+            14% { transform: scale(1.3); }
+            28% { transform: scale(1); }
+            42% { transform: scale(1.3); }
+            70% { transform: scale(1); }
+        }
+
+        .titulo-corazon span:last-child {
+            font-weight: 800;
+            text-shadow: 2px 2px 0 #ff69b4;
+        }
+
+        .bloque {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4vw;
+            width: 100%;
+            max-width: 420px;
+            margin-bottom: 2.5vh;
+            background: rgba(255,255,255,0.5);
+            backdrop-filter: blur(4px);
+            border-radius: 30px;
+            padding: 14px 12px;
+            box-shadow: 0 8px 24px rgba(255,20,80,0.15);
+            z-index: 2;
+            border: 2px solid rgba(255,255,255,0.7);
+        }
+
+        .bloque .texto {
+            flex: 2;
+            font-size: 3.4vw;
+            line-height: 1.6;
+            color: #4a1a2c;
+            font-weight: 500;
+            text-align: justify;
+            padding: 0 4px;
+        }
+
+        .bloque .imagen {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .bloque .imagen img {
+            width: 100%;
+            max-width: 130px;
+            height: auto;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border: 3px solid white;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            background: #ffe0ec;
+        }
+
+        .btn-regresar {
+            margin-top: 2vh;
+            margin-bottom: 4vh;
+            background: #ff69b4;
+            border: none;
+            border-radius: 50px;
+            padding: 2.5vh 10vw;
+            font-size: 5vw;
+            font-weight: 700;
+            color: white;
+            box-shadow: 0 6px 0 #c2185b, 0 8px 20px rgba(255,20,80,0.4);
+            cursor: pointer;
+            z-index: 2;
+            transition: all 0.15s;
+            touch-action: manipulation;
+        }
+
+        .btn-regresar:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 0 #c2185b;
+        }
+
+        /* ========== ANIMACIÓN CORAZÓN ========== */
+        #animacion-corazon {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255,182,193,0.92);
+            backdrop-filter: blur(6px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        #animacion-corazon.activa {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .corazon-palpitante {
+            font-size: 30vw;
+            animation: latido-fuerte 0.6s infinite alternate;
+            text-shadow: 0 0 40px rgba(255,0,100,0.6);
+            position: relative;
+        }
+
+        .corazon-palpitante .texto-adoro {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 6vw;
+            font-weight: 900;
+            color: white;
+            text-shadow: 0 0 20px #d63384, 0 0 40px #ff1493;
+            white-space: nowrap;
+        }
+
+        @keyframes latido-fuerte {
+            0% { transform: scale(0.9); }
+            100% { transform: scale(1.4); }
+        }
+
+        .pescado {
+            position: fixed;
+            font-size: 10vw;
+            pointer-events: none;
+            z-index: 100;
+            transition: all 0.3s ease;
+        }
+
+        .martillo {
+            position: fixed;
+            font-size: 12vw;
+            pointer-events: none;
+            z-index: 100;
+            animation: golpe 0.6s ease forwards;
+        }
+
+        @keyframes golpe {
+            0% { transform: scale(0.2) rotate(-30deg); opacity: 1; }
+            50% { transform: scale(1.8) rotate(20deg); opacity: 1; }
+            100% { transform: scale(0) rotate(60deg); opacity: 0; }
+        }
+
+        @media (max-width: 380px) {
+            .bloque .texto { font-size: 3vw; }
+            .btn { font-size: 4.5vw; padding: 2vh 6vw; }
+            .pregunta { font-size: 5.5vw; }
+            .gato { font-size: 13vw; }
+            .burbuja { font-size: 3.5vw; top: 16vh; }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- ====== PÁGINA 1 ====== -->
+    <div id="pagina1">
+        <div class="gato" id="gato">🐱</div>
+        <div class="burbuja" id="burbuja">😽</div>
+        <div class="pregunta">¿Me amas? 🥺</div>
+        <div class="botones" id="botonesContainer">
+            <button class="btn btn-verde" id="btnSi">Sí</button>
+            <button class="btn btn-rojo" id="btnNo">No</button>
+        </div>
+    </div>
+
+    <!-- ====== PÁGINA 2 ====== -->
+    <div id="pagina2">
+        <div class="corazones-fondo" id="corazonesFondo"></div>
+
+        <div class="titulo-corazon">
+            <span class="corazon-icon">❤️</span>
+            <span>Feliz 9 meses</span>
+            <span class="corazon-icon">❤️</span>
+        </div>
+
+        <div class="bloque">
+            <div class="texto" id="textoBloque1">
+                Amor, una vez escribiste en una carta el porque me amas y creo que ahora me corresponde a mí decirte porque te amo, no solo para que lo sepas, también para que entiendas la tan importante y valiosa parte que eres de mí vida.
+            </div>
+            <div class="imagen">
+                <img src="imagen1.png" alt="imagen1" id="img1">
+            </div>
+        </div>
+
+        <div class="bloque">
+            <div class="imagen">
+                <img src="imagen2.png" alt="imagen2" id="img2">
+            </div>
+            <div class="texto" id="textoBloque2">
+                ¿Porque te amo?: Porque eres lo más bello que hay en este mundo, porque tan solo con que tú estés feliz yo también lo estoy, porque eres el motivo de todas mis alegrías y la razón por la que me despierto, porque quiero que seas siempre mi princesa malcriada, porque quiero que seas mi esposa y la madre de mis hijos, en fin si tuviera que hablar sobre eso no terminaría nunca, lo más importante es que entiendas que sin tí mi vida no tiene sentido y que deseo estar contigo hasta que deje de respirar, te amo pingüina 🫰🏻
+            </div>
+        </div>
+
+        <button class="btn-regresar" id="btnRegresar">Regresar</button>
+    </div>
+
+    <!-- ====== ANIMACIÓN CORAZÓN ====== -->
+    <div id="animacion-corazon">
+        <div class="corazon-palpitante">
+            ❤️
+            <div class="texto-adoro">te adoro</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // ============================================================
+    // LÓGICA COMPLETA
+    // ============================================================
+
+    const btnNo = document.getElementById('btnNo');
+    const btnSi = document.getElementById('btnSi');
+    const gato = document.getElementById('gato');
+    const burbuja = document.getElementById('burbuja');
+    const pagina1 = document.getElementById('pagina1');
+    const pagina2 = document.getElementById('pagina2');
+    const btnRegresar = document.getElementById('btnRegresar');
+    const animacionCorazon = document.getElementById('animacion-corazon');
+    const container = document.querySelector('.container');
+
+    let golpes = 0;
+    const frases = [
+        '¿Segura?',
+        'Piensa bien 🥺',
+        'Se que me amas',
+        '¿Es mentira no?',
+        '¿A tu esposito? 🥺'
+    ];
+
+    // ========== FUNCIÓN POSICIÓN ALEATORIA ==========
+    function obtenerPosicionAleatoria() {
+        const cRect = container.getBoundingClientRect();
+        const btnRect = btnNo.getBoundingClientRect();
+        const btnW = btnRect.width || 90;
+        const btnH = btnRect.height || 45;
+
+        const gatoRect = gato.getBoundingClientRect();
+        const preguntaRect = document.querySelector('.pregunta').getBoundingClientRect();
+        const btnSiRect = btnSi.getBoundingClientRect();
+
+        let x, y, intentos = 0;
+        const maxIntentos = 150;
+        const margen = 25;
+
+        do {
+            x = Math.random() * (cRect.width - btnW - 20) + 10;
+            y = Math.random() * (cRect.height - btnH - 20) + 10;
+            intentos++;
+
+            const colGato = !(x + btnW < gatoRect.left - margen ||
+                             x > gatoRect.right + margen ||
+                             y + btnH < gatoRect.top - margen ||
+                             y > gatoRect.bottom + margen);
+
+            const colPregunta = !(x + btnW < preguntaRect.left - margen ||
+                                 x > preguntaRect.right + margen ||
+                                 y + btnH < preguntaRect.top - margen ||
+                                 y > preguntaRect.bottom + margen);
+
+            const colBtnSi = !(x + btnW < btnSiRect.left - margen ||
+                              x > btnSiRect.right + margen ||
+                              y + btnH < btnSiRect.top - margen ||
+                              y > btnSiRect.bottom + margen);
+
+        } while ((colGato || colPregunta || colBtnSi) && intentos < maxIntentos);
+
+        return { x, y };
+    }
+
+    // ========== MOSTRAR FRASE ==========
+    function mostrarFrase() {
+        const frase = frases[Math.floor(Math.random() * frases.length)];
+        burbuja.textContent = frase;
+        burbuja.classList.add('visible');
+        setTimeout(() => {
+            burbuja.classList.remove('visible');
+        }, 2000);
+    }
+
+    // ========== LANZAR PESCADO ==========
+    function lanzarPescado() {
+        const pescado = document.createElement('div');
+        pescado.className = 'pescado';
+        pescado.textContent = '🐟';
+        const rect = btnNo.getBoundingClientRect();
+        const x = rect.left + rect.width / 2 - 25;
+        const y = rect.top - 10;
+        pescado.style.left = x + 'px';
+        pescado.style.top = y + 'px';
+        document.body.appendChild(pescado);
+
+        setTimeout(() => {
+            pescado.style.transform = 'translate(0, 60px) rotate(30deg) scale(1.3)';
+            setTimeout(() => {
+                pescado.remove();
+            }, 400);
+        }, 80);
+    }
+
+    // ========== EVENTO BOTÓN "NO" ==========
+    btnNo.addEventListener('click', function(e) {
+        e.stopPropagation();
+        if (btnNo.classList.contains('roto')) return;
+
+        golpes++;
+        mostrarFrase();
+        lanzarPescado();
+
+        const pos = obtenerPosicionAleatoria();
+        btnNo.style.position = 'absolute';
+        btnNo.style.left = pos.x + 'px';
+        btnNo.style.top = pos.y + 'px';
+        btnNo.style.transform = 'scale(0.7)';
+        setTimeout(() => {
+            btnNo.style.transform = 'scale(1)';
+        }, 150);
+
+        if (golpes >= 4) {
+            const martillo = document.createElement('div');
+            martillo.className = 'martillo';
+            martillo.textContent = '🔨';
+            const rect = btnNo.getBoundingClientRect();
+            martillo.style.left = (rect.left + rect.width / 2 - 30) + 'px';
+            martillo.style.top = (rect.top - 20) + 'px';
+            document.body.appendChild(martillo);
+
+            setTimeout(() => {
+                martillo.remove();
+                btnNo.classList.add('roto');
+                burbuja.textContent = '💔 Se rompió...';
+                burbuja.classList.add('visible');
+                setTimeout(() => {
+                    burbuja.classList.remove('visible');
+                }, 2500);
+            }, 600);
+        }
+    });
+
+    // ========== EVENTO BOTÓN "SÍ" ==========
+    btnSi.addEventListener('click', function() {
+        pagina1.classList.add('oculta');
+        pagina2.classList.add('visible');
+        generarCorazones();
+    });
+
+    // ========== GENERAR CORAZONES DECORATIVOS ==========
+    function generarCorazones() {
+        const contenedor = document.getElementById('corazonesFondo');
+        contenedor.innerHTML = '';
+        const emojis = ['❤️', '💖', '💗', '💓', '💕', '💝', '♥️'];
+        const cantidad = 28;
+
+        for (let i = 0; i < cantidad; i++) {
+            const corazon = document.createElement('div');
+            corazon.className = 'corazon-flotante';
+            corazon.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+            corazon.style.left = Math.random() * 92 + '%';
+            corazon.style.top = Math.random() * 92 + '%';
+            const size = 4 + Math.random() * 7;
+            corazon.style.fontSize = size + 'vw';
+            corazon.style.transform = `rotate(${Math.random() * 360}deg)`;
+            const duracion = 6 + Math.random() * 9;
+            corazon.style.animationDuration = duracion + 's';
+            corazon.style.animationDelay = Math.random() * 5 + 's';
+            contenedor.appendChild(corazon);
+        }
+    }
+
+    // ========== EVENTO BOTÓN "REGRESAR" (AHORA VUELVE AL INICIO) ==========
+    btnRegresar.addEventListener('click', function() {
+        // Mostrar animación de corazón
+        animacionCorazon.classList.add('activa');
+        
+        // Después de 2.5 segundos, ocultar animación y volver a página 1
+        setTimeout(() => {
+            animacionCorazon.classList.remove('activa');
+            pagina2.classList.remove('visible');
+            pagina1.classList.remove('oculta');
+            
+            // Reiniciar el botón "No" si estaba roto (opcional)
+            // Si quieres que se reinicie, descomenta las 2 líneas siguientes:
+            // btnNo.classList.remove('roto');
+            // golpes = 0;
+        }, 2500);
+    });
+
+    console.log('💕 ¡Te amo pingüina! 💕');
+</script>
+</body>
+</html>
